@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState,useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -36,6 +36,29 @@ const GraphCanvas = () => {
     const [edges, setEdges] = useState<Edge[]>(initialEdges);
   
     const setSelectedNodeId = useUIStore((s) => s.setSelectedNodeId);
+    const selectedNodeId = useUIStore((s) => s.selectedNodeId);
+
+    useEffect(() => {
+        function handleKeyDown(e: KeyboardEvent) {
+          if (
+            (e.key === 'Delete' || e.key === 'Backspace') &&
+            selectedNodeId
+          ) {
+            setNodes((nds) => nds.filter((n) => n.id !== selectedNodeId));
+            setEdges((eds) =>
+              eds.filter(
+                (e) =>
+                  e.source !== selectedNodeId &&
+                  e.target !== selectedNodeId
+              )
+            );
+            setSelectedNodeId(null);
+          }
+        }
+      
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [selectedNodeId, setSelectedNodeId]);
   
     const onNodesChange = useCallback(
       (changes: NodeChange[]) => {
