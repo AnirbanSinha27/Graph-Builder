@@ -1,16 +1,42 @@
 import { useUIStore } from "../store/useUIstore";
 
-function PanelContent() {
-  return (
-    <div className="space-y-4">
-      <div className="font-medium">Apps</div>
-      <div className="h-24 bg-gray-100 rounded" />
+const MOCK_APPS = [
+  { id: 'app-1', name: 'supertokens-golang' },
+  { id: 'app-2', name: 'supertokens-java' },
+  { id: 'app-3', name: 'supertokens-python' },
+];
 
-      <div className="border-t pt-4 font-medium">
-        Node Inspector
+function PanelContent() {
+
+  const selectedAppId = useUIStore((s) => s.selectedAppId);
+  const setSelectedAppId = useUIStore((s) => s.setSelectedAppId);
+
+  return (
+    <div className="space-y-6">
+        <div>
+          <div className="font-medium mb-2">Apps</div>
+          <div className="space-y-1">
+            {MOCK_APPS.map((app) => (
+              <button
+                key={app.id}
+                onClick={() => setSelectedAppId(app.id)}
+                className={`w-full text-left px-2 py-1 rounded text-sm
+                  ${selectedAppId === app.id ? 'bg-gray-200' : 'hover:bg-gray-100'}
+                `}
+              >
+                {app.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="border-t pt-4 font-medium mb-2">
+            Node Inspector
+          </div>
+          <div className="h-40 bg-gray-100 rounded" />
+        </div>
       </div>
-      <div className="h-48 bg-gray-100 rounded" />
-    </div>
   );
 }
 
