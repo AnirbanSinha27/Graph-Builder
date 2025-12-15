@@ -1,4 +1,4 @@
-import { useCallback, useState,useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -7,36 +7,47 @@ import ReactFlow, {
 } from 'reactflow';
 import type { Node, Edge, NodeChange, EdgeChange } from 'reactflow';
 import { useUIStore } from '../store/useUIstore';
+import { useGraph } from '../api/queries';
 
-const initialNodes: Node[] = [
-    {
-      id: '1',
-      position: { x: 100, y: 100 },
-      data: { label: 'Postgres' },
-    },
-    {
-      id: '2',
-      position: { x: 400, y: 150 },
-      data: { label: 'Redis' },
-    },
-    {
-      id: '3',
-      position: { x: 250, y: 350 },
-      data: { label: 'MongoDB' },
-    },
-  ];
+// const initialNodes: Node[] = [
+//     {
+//       id: '1',
+//       position: { x: 100, y: 100 },
+//       data: { label: 'Postgres' },
+//     },
+//     {
+//       id: '2',
+//       position: { x: 400, y: 150 },
+//       data: { label: 'Redis' },
+//     },
+//     {
+//       id: '3',
+//       position: { x: 250, y: 350 },
+//       data: { label: 'MongoDB' },
+//     },
+//   ];
   
-  const initialEdges: Edge[] = [
-    { id: 'e1-2', source: '1', target: '2' },
-    { id: 'e2-3', source: '2', target: '3' },
-  ];
+//   const initialEdges: Edge[] = [
+//     { id: 'e1-2', source: '1', target: '2' },
+//     { id: 'e2-3', source: '2', target: '3' },
+//   ];
 
 const GraphCanvas = () => {
-    const [nodes, setNodes] = useState<Node[]>(initialNodes);
-    const [edges, setEdges] = useState<Edge[]>(initialEdges);
-  
-    const setSelectedNodeId = useUIStore((s) => s.setSelectedNodeId);
-    const selectedNodeId = useUIStore((s) => s.selectedNodeId);
+  const selectedAppId = useUIStore((s) => s.selectedAppId);
+  const { data, isLoading, isError } = useGraph(selectedAppId);
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+
+  // Load graph data when it arrives
+  useEffect(() => {
+    if (data) {
+      setNodes(data.nodes ?? []);
+      setEdges(data.edges ?? []);
+    }
+  }, [data]);
+
+  const setSelectedNodeId = useUIStore((s) => s.setSelectedNodeId);
+  const selectedNodeId = useUIStore((s) => s.selectedNodeId);
 
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
@@ -67,12 +78,37 @@ const GraphCanvas = () => {
       []
     );
   
-    const onEdgesChange = useCallback(
-      (changes: EdgeChange[]) => {
-        setEdges((eds) => applyEdgeChanges(changes, eds));
-      },
-      []
-    );
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      setEdges((eds) => applyEdgeChanges(changes, eds));
+    },
+    []
+  );
+
+    if (!selectedAppId) {
+      return (
+        <div className="h-full flex items-center justify-center text-gray-400">
+          Select an app to load graph
+        </div>
+      );
+    }
+    
+    if (isLoading) {
+      return (
+        <div className="h-full flex items-center justify-center">
+          Loading graph...
+        </div>
+      );
+    }
+    
+    if (isError) {
+      return (
+        <div className="h-full flex items-center justify-center text-red-500">
+          Failed to load graph
+        </div>
+      );
+    }
+    
   
     return (
       <ReactFlow

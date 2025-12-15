@@ -1,4 +1,5 @@
 import { useUIStore } from "../store/useUIstore";
+import { useApps } from "../api/queries";
 
 const MOCK_APPS = [
   { id: 'app-1', name: 'supertokens-golang' },
@@ -8,35 +9,39 @@ const MOCK_APPS = [
 
 function PanelContent() {
 
+  const { data, isLoading, isError } = useApps();
   const selectedAppId = useUIStore((s) => s.selectedAppId);
   const setSelectedAppId = useUIStore((s) => s.setSelectedAppId);
 
+  if (isLoading) {
+    return <div className="text-sm text-gray-400">Loading apps...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-sm text-red-500">Failed to load apps</div>;
+  }
+
   return (
     <div className="space-y-6">
-        <div>
-          <div className="font-medium mb-2">Apps</div>
-          <div className="space-y-1">
-            {MOCK_APPS.map((app) => (
-              <button
-                key={app.id}
-                onClick={() => setSelectedAppId(app.id)}
-                className={`w-full text-left px-2 py-1 rounded text-sm
-                  ${selectedAppId === app.id ? 'bg-gray-200' : 'hover:bg-gray-100'}
-                `}
-              >
-                {app.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="border-t pt-4 font-medium mb-2">
-            Node Inspector
-          </div>
-          <div className="h-40 bg-gray-100 rounded" />
+      <div>
+        <div className="font-medium mb-2">Apps</div>
+        <div className="space-y-1">
+          {data!.map((app) => (
+            <button
+              key={app.id}
+              onClick={() => setSelectedAppId(app.id)}
+              className={`w-full text-left px-2 py-1 rounded text-sm
+                ${selectedAppId === app.id ? 'bg-gray-200' : 'hover:bg-gray-100'}
+              `}
+            >
+              {app.name}
+            </button>
+          ))}
         </div>
       </div>
+
+      {/* Inspector placeholder stays */}
+    </div>
   );
 }
 
