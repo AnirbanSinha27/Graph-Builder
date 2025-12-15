@@ -1,6 +1,7 @@
 import  TopBar  from "./Topbar";
 import LeftRail  from "./LeftRail";
 import  RightPanel  from "./RightPanel";
+import GraphCanvas from "../canvas/GraphCanvas";
 
 export function AppLayout() {
   return (
@@ -12,9 +13,7 @@ export function AppLayout() {
 
         {/* Center Canvas Placeholder */}
         <main className="flex-1 bg-gray-50 flex items-center justify-center">
-          <div className="text-gray-400">
-            Canvas Area
-          </div>
+          <GraphCanvas/>
         </main>
 
         <RightPanel />
