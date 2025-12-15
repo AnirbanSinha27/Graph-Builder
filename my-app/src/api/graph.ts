@@ -17,17 +17,30 @@ export function fetchGraph(appId: string): Promise<{
           {
             id: '1',
             position: { x: 100, y: 100 },
-            data: { label: `${appId} - Postgres` },
+            data: { 
+              label: `${appId} - Postgres`,
+              status: 'healthy',
+              cpu: 20,
+              description: ''
+             },
           },
           {
             id: '2',
             position: { x: 400, y: 150 },
-            data: { label: `${appId} - Redis` },
+            data: { 
+              label: `${appId} - Redis`,
+              status: 'healthy',
+              cpu: 20,
+              description: '' },
           },
           {
             id: '3',
             position: { x: 250, y: 350 },
-            data: { label: `${appId} - MongoDB` },
+            data: { 
+              label: `${appId} - MongoDB`,
+              status: 'healthy',
+              cpu: 20,
+              description: '' },
           },
         ],
         edges: [

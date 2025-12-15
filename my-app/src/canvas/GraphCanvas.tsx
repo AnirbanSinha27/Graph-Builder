@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -32,11 +32,17 @@ import { useGraph } from '../api/queries';
 //     { id: 'e2-3', source: '2', target: '3' },
 //   ];
 
-const GraphCanvas = () => {
+interface Props {
+  nodes: Node[];
+  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+  edges: Edge[];
+  setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
+}
+
+
+const GraphCanvas = ({ nodes, setNodes,edges,setEdges }: Props) => {
   const selectedAppId = useUIStore((s) => s.selectedAppId);
   const { data, isLoading, isError } = useGraph(selectedAppId);
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
 
   // Load graph data when it arrives
   useEffect(() => {
@@ -51,6 +57,17 @@ const GraphCanvas = () => {
 
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
+          const target = e.target as HTMLElement | null;
+          const isEditingText =
+            target &&
+            (target.tagName === 'INPUT' ||
+              target.tagName === 'TEXTAREA' ||
+              target.isContentEditable);
+
+          if (isEditingText) {
+            return;
+          }
+
           if (
             (e.key === 'Delete' || e.key === 'Backspace') &&
             selectedNodeId
