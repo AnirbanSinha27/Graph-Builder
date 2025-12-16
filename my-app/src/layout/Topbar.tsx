@@ -1,6 +1,10 @@
 import { useUIStore } from "../store/useUIstore";
 
-const Topbar = () => {
+interface Props {
+  onFitView: () => void;
+}
+
+const Topbar = ({ onFitView }: Props) => {
 
   const setMobilePanelOpen = useUIStore((s) => s.setMobilePanelOpen);
 
@@ -16,7 +20,7 @@ const Topbar = () => {
             Panel
           </button>
 
-          <button className="text-sm px-2 py-1 border rounded">
+          <button onClick={onFitView} className="cursor-pointer text-sm px-2 py-1 border rounded">
             Fit
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, forwardRef,useImperativeHandle } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -8,6 +8,7 @@ import ReactFlow, {
 import type { Node, Edge, NodeChange, EdgeChange } from 'reactflow';
 import { useUIStore } from '../store/useUIstore';
 import { useGraph } from '../api/queries';
+import { useReactFlow } from 'reactflow';
 
 // const initialNodes: Node[] = [
 //     {
@@ -39,8 +40,18 @@ interface Props {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
 }
 
+export interface GraphCanvasHandle {
+  fitView: () => void;
+}
 
-const GraphCanvas = ({ nodes, setNodes,edges,setEdges }: Props) => {
+
+const GraphCanvas = forwardRef<GraphCanvasHandle, Props>(
+  ({ nodes, edges, setNodes, setEdges }, ref) => {
+    const rf = useReactFlow();
+
+    useImperativeHandle(ref, () => ({
+      fitView: () => rf.fitView({ padding: 0.2 }),
+    }));
   const selectedAppId = useUIStore((s) => s.selectedAppId);
   const { data, isLoading, isError } = useGraph(selectedAppId);
 
@@ -145,6 +156,7 @@ const GraphCanvas = ({ nodes, setNodes,edges,setEdges }: Props) => {
         <Controls />
       </ReactFlow>
     );
-}
+  })
+
 
 export default GraphCanvas
