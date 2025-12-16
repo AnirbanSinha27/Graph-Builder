@@ -21,7 +21,7 @@ export function AppLayout() {
         <LeftRail />
 
         {/* Center Canvas Placeholder */}
-        <main className="flex-1 bg-gray-50 flex items-center justify-center">
+        <main className="flex-1 bg-background flex items-center justify-center">
           <ReactFlowProvider>
             <GraphCanvas
             nodes={nodes}

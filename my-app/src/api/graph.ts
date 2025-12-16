@@ -29,7 +29,7 @@ export function fetchGraph(appId: string): Promise<{
             position: { x: 400, y: 150 },
             data: { 
               label: `${appId} - Redis`,
-              status: 'healthy',
+              status: 'degraded',
               cpu: 20,
               description: '' },
           },
@@ -38,7 +38,7 @@ export function fetchGraph(appId: string): Promise<{
             position: { x: 250, y: 350 },
             data: { 
               label: `${appId} - MongoDB`,
-              status: 'healthy',
+              status: 'down',
               cpu: 20,
               description: '' },
           },

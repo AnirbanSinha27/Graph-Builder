@@ -115,7 +115,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, Props>(
 
     if (!selectedAppId) {
       return (
-        <div className="h-full flex items-center justify-center text-gray-400">
+        <div className="h-full flex items-center justify-center text-muted-foreground">
           Select an app to load graph
         </div>
       );
@@ -123,7 +123,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, Props>(
     
     if (isLoading) {
       return (
-        <div className="h-full flex items-center justify-center">
+        <div className="h-full flex items-center justify-center text-foreground">
           Loading graph...
         </div>
       );
@@ -131,7 +131,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, Props>(
     
     if (isError) {
       return (
-        <div className="h-full flex items-center justify-center text-red-500">
+        <div className="h-full flex items-center justify-center text-destructive">
           Failed to load graph
         </div>
       );
@@ -151,9 +151,10 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, Props>(
         onPaneClick={() => {
           setSelectedNodeId(null);
         }}
+        className="dark-theme"
       >
-        <Background gap={16} size={1} />
-        <Controls />
+        <Background gap={16} size={1} color="rgba(255, 255, 255, 0.05)" />
+        <Controls className="react-flow__controls-dark" />
       </ReactFlow>
     );
   })

@@ -19,28 +19,28 @@ function PanelContent({ nodes, setNodes }: Props) {
   const selectedNode = nodes?.find((n) => n.id === selectedNodeId);
 
   if (isLoading) {
-    return <div className="text-sm text-gray-400">Loading apps...</div>;
+    return <div className="text-sm text-muted-foreground">Loading apps...</div>;
   }
 
   if (isError) {
-    return <div className="text-sm text-red-500">Failed to load apps</div>;
+    return <div className="text-sm text-destructive">Failed to load apps</div>;
   }
 
   return (
     <div className="space-y-6">
       {/* Apps List */}
       <div>
-        <div className="font-medium mb-2">Apps</div>
+        <div className="font-medium mb-2 text-foreground">Apps</div>
         <div className="space-y-1">
           {data!.map((app) => (
             <button
               key={app.id}
               onClick={() => setSelectedAppId(app.id)}
-              className={`w-full text-left px-2 py-1 rounded text-sm
+              className={`w-full text-left px-2 py-1 rounded text-sm transition-colors
                 ${
                   selectedAppId === app.id
-                    ? "bg-gray-200"
-                    : "hover:bg-gray-100"
+                    ? "bg-accent text-accent-foreground"
+                    : "hover:bg-accent/50 text-foreground"
                 }
               `}
             >
@@ -51,11 +51,11 @@ function PanelContent({ nodes, setNodes }: Props) {
       </div>
 
       {/* Node Inspector */}
-      <div className="border-t pt-4">
-        <div className="font-medium mb-2">Node Inspector</div>
+      <div className="border-t border-border pt-4">
+        <div className="font-medium mb-2 text-foreground">Node Inspector</div>
 
         {!selectedNode && (
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-muted-foreground">
             Select a node to inspect
           </div>
         )}
@@ -86,14 +86,14 @@ const RightPanel = ({ nodes, setNodes }: Props) => {
   return (
     <>
       {/* Desktop */}
-      <aside className="w-80 border-l p-4 hidden lg:block">
+      <aside className="w-80 border-l border-border bg-background p-4 hidden lg:block">
         <PanelContent nodes={nodes} setNodes={setNodes} />
       </aside>
 
       {/* Mobile Drawer */}
       {isMobileOpen && (
         <div className="fixed inset-0 bg-black/40 z-40 lg:hidden">
-          <aside className="absolute right-0 top-0 h-full w-80 bg-white p-4">
+          <aside className="absolute right-0 top-0 h-full w-80 bg-background p-4">
             <button
               className="mb-4 text-sm"
               onClick={() => setMobilePanelOpen(false)}
