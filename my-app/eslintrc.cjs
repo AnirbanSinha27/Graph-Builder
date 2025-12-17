@@ -21,5 +21,13 @@ module.exports = {
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-unused-vars': ['warn'],
     },
+    overrides: [
+      {
+        files: ['src/components/ui/**/*.{ts,tsx}'],
+        rules: {
+          'react-refresh/only-export-components': 'off',
+        },
+      },
+    ],    
   };
   

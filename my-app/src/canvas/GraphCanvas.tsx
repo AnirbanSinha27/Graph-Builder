@@ -61,7 +61,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, Props>(
       setNodes(data.nodes ?? []);
       setEdges(data.edges ?? []);
     }
-  }, [data]);
+  }, [data,setNodes,setEdges]);
 
   const setSelectedNodeId = useUIStore((s) => s.setSelectedNodeId);
   const selectedNodeId = useUIStore((s) => s.selectedNodeId);
@@ -99,19 +99,20 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, Props>(
         return () => window.removeEventListener('keydown', handleKeyDown);
       }, [selectedNodeId, setSelectedNodeId]);
   
-    const onNodesChange = useCallback(
-      (changes: NodeChange[]) => {
-        setNodes((nds) => applyNodeChanges(changes, nds));
-      },
-      []
-    );
-  
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) => {
-      setEdges((eds) => applyEdgeChanges(changes, eds));
-    },
-    []
-  );
+      const onNodesChange = useCallback(
+        (changes: NodeChange[]) => {
+          setNodes((nds) => applyNodeChanges(changes, nds));
+        },
+        [setNodes]
+      );
+      
+      const onEdgesChange = useCallback(
+        (changes: EdgeChange[]) => {
+          setEdges((eds) => applyEdgeChanges(changes, eds));
+        },
+        [setEdges]
+      );
+      
 
     if (!selectedAppId) {
       return (

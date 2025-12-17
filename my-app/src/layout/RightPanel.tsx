@@ -1,6 +1,7 @@
 import { useUIStore } from "../store/useUIstore";
 import { useApps } from "../api/queries";
 import { useQueryClient } from "@tanstack/react-query";
+import type { ServiceNodeData } from "@/types/graph";
 
 import  NodeInspector  from "../inspector/NodeInspector";
 import type { Node } from "reactflow";
@@ -64,8 +65,8 @@ function PanelContent({ nodes, setNodes }: Props) {
 
         {selectedNode && (
           <NodeInspector
-            data={selectedNode.data}
-            onChange={(newData) => {
+            data={selectedNode.data as ServiceNodeData}
+            onChange={(newData: ServiceNodeData) => {
               setNodes((nds) => {
                 const updatedNodes = nds.map((n) =>
                   n.id === selectedNode.id ? { ...n, data: newData } : n
