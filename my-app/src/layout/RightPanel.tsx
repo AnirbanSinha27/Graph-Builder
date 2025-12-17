@@ -1,5 +1,6 @@
 import { useUIStore } from "../store/useUIstore";
 import { useApps } from "../api/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 import  NodeInspector  from "../inspector/NodeInspector";
 import type { Node } from "reactflow";
@@ -11,6 +12,7 @@ interface Props {
 
 function PanelContent({ nodes, setNodes }: Props) {
   const { data, isLoading, isError } = useApps();
+  const queryClient = useQueryClient();
 
   const selectedAppId = useUIStore((s) => s.selectedAppId);
   const setSelectedAppId = useUIStore((s) => s.setSelectedAppId);
@@ -64,13 +66,25 @@ function PanelContent({ nodes, setNodes }: Props) {
           <NodeInspector
             data={selectedNode.data}
             onChange={(newData) => {
-              setNodes((nds) =>
-                nds.map((n) =>
-                  n.id === selectedNode.id
-                    ? { ...n, data: newData }
-                    : n
-                )
-              );
+              setNodes((nds) => {
+                const updatedNodes = nds.map((n) =>
+                  n.id === selectedNode.id ? { ...n, data: newData } : n
+                );
+
+                // Persist updated node data into React Query cache
+                if (selectedAppId) {
+                  queryClient.setQueryData(
+                    ["graph", selectedAppId],
+                    (old: any) => ({
+                      ...(old ?? {}),
+                      nodes: updatedNodes,
+                      edges: old?.edges ?? [],
+                    })
+                  );
+                }
+
+                return updatedNodes;
+              });
             }}
           />
         )}
