@@ -1,73 +1,153 @@
-# React + TypeScript + Vite
+# App Graph Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small frontend application that visualizes and inspects application service graphs using an interactive canvas.
 
-Currently, two official plugins are available:
+This project was built as a take-home assignment to demonstrate **modern React frontend architecture**, including layout composition, graph rendering, global state management, and server-state handling with mock APIs.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Structured layout**
+  - Top bar, left rail, center canvas, right inspector panel
+  - Responsive: inspector becomes a slide-over drawer on smaller screens
 
-## Expanding the ESLint configuration
+- **Interactive graph canvas**
+  - Built with **ReactFlow (xyflow)**
+  - Drag, pan, zoom
+  - Select nodes
+  - Delete nodes with `Delete` / `Backspace`
+  - Fit view control
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Service Node Inspector**
+  - Contextual panel shown when a node is selected
+  - Status pill (Healthy / Degraded / Down)
+  - Tabs (Config / Runtime)
+  - Editable node name and description
+  - Slider + numeric input (fully synced)
+  - Changes persist directly to the node data
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Mock backend with TanStack Query**
+  - Fetch apps list
+  - Fetch graph (nodes + edges) per app
+  - Simulated latency
+  - Simulated error states
+  - Cached results and automatic refetch on app change
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **State management**
+  - **Zustand** for global UI state
+    - selected app
+    - selected node
+    - mobile panel open/close
+    - active inspector tab
+  - **TanStack Query** for server state
+  - **ReactFlow** for graph state
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🧱 Tech Stack
+
+- **React + Vite**
+- **TypeScript** (strict mode enabled)
+- **ReactFlow (xyflow)** – graph rendering
+- **TanStack Query** – server state & caching
+- **Zustand** – global UI state
+- **Tailwind CSS** – styling
+- **shadcn/ui** – UI components
+- **ESLint** – linting
+
+---
+
+## 🧠 Architecture Overview
+
+- **Server data (apps, graph)**  
+  → Managed by TanStack Query via mock async functions
+
+- **Client/UI state**  
+  → Managed by Zustand (selection, UI toggles)
+
+- **Graph state (nodes, edges)**  
+  → Managed in React state and passed to both canvas and inspector  
+  → Single source of truth shared between ReactFlow and inspector
+
+This separation avoids duplicated state and keeps updates predictable.
+
+---
+
+## 🔌 Mock API Strategy
+
+This project uses **function-based mock APIs** (no real HTTP server), as allowed by the task.
+
+```ts
+fetchApps(): Promise<App[]>
+fetchGraph(appId): Promise<{ nodes; edges }>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- In-memory data
+- Simulated latency via `setTimeout`
+- Random error simulation
+- Consumed directly by TanStack Query
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+There are no real `/apps` or `/apps/:id/graph` endpoints exposed in the browser.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18
+- npm
+
+### Install dependencies
+
+```bash
+npm install
 ```
+
+### Run development server
+
+```bash
+npm run dev
+```
+
+Open: 👉 http://localhost:5173
+
+---
+
+## 🧪 Available Scripts
+
+```bash
+npm run dev        # Start development server
+npm run build      # Production build
+npm run preview    # Preview production build
+npm run lint       # Run ESLint
+npm run typecheck  # Run TypeScript type checking
+```
+
+---
+
+## 📝 Notes
+
+- This project focuses on correctness, clarity, and architecture, not pixel-perfect UI.
+- The left rail is intentionally static, as allowed by the assignment.
+- Mock APIs are implemented at the function level to keep the project frontend-only.
+
+---
+
+## ✅ Assignment Coverage
+
+All required criteria from the task are implemented:
+
+- Layout composition
+- ReactFlow interactions
+- Service node inspector
+- TanStack Query with mock APIs
+- Zustand global state
+- Strict TypeScript
+- Linting and scripts
+- Responsive behavior
+
+---
+
+Built as part of a frontend intern take-home assignment to demonstrate real-world React patterns and state management.
